@@ -1,0 +1,234 @@
+# ===============================================================
+# Butterfly 主题配置（覆盖 theme 默认值）
+# 主题版本：5.7.0
+# 文档：https://butterfly.js.org/
+# ===============================================================
+
+# 导航栏
+nav:
+  logo:
+  display_title: true
+  display_post_title: true
+  fixed: false
+
+# 菜单
+menu:
+  首页: / || fas fa-home
+  归档: /archives/ || fas fa-archive
+  标签: /tags/ || fas fa-tags
+  分类: /categories/ || fas fa-folder-open
+  关于: /about/ || fas fa-user
+
+# 代码块
+code_blocks:
+  theme: darker
+  macStyle: true
+  height_limit: false
+  word_wrap: false
+  copy: true
+  language: true
+  shrink: false
+  fullpage: false
+
+# 社交链接
+social:
+  fab fa-github: https://github.com/sovoyf999 || Github || '#24292e'
+  fas fa-envelope: mailto:suyufeng4399@outlook.com || Email || '#4a7dbe'
+
+# 头像
+avatar:
+  img: /images/avatar.png
+  effect: true
+
+# 顶部图（渐变）
+default_top_img: 'linear-gradient(135deg, #1e1b4b 0%, #4338ca 45%, #0f172a 100%)'
+index_img: 'linear-gradient(135deg, #0b1020 0%, #1e1b4b 45%, #000000 100%)'
+archive_img: 'linear-gradient(135deg, #111827 0%, #312e81 50%, #000000 100%)'
+
+# 网站背景（渐变）
+background: 'linear-gradient(135deg, #0b1020 0%, #151a35 45%, #000000 100%)'
+
+# 文章元信息
+post_meta:
+  page:
+    date_type: created
+    date_format: date
+    categories: true
+    tags: false
+    label: true
+  post:
+    position: left
+    date_type: both
+    date_format: date
+    categories: true
+    tags: true
+    label: true
+
+# 首页顶部信息位置与高度
+index_site_info_top: 38%
+index_top_img_height: 100vh
+
+# 首页副标题（打字机效果）
+subtitle:
+  enable: true
+  effect: true
+  typed_option:
+  source: false
+  sub:
+    - 'Juice WRLD Forever'
+    - '记录技术与生活'
+    - 'Stay curious. Keep building.'
+
+# 首页文章布局：3 = 封面左右交替
+index_layout: 3
+
+# 首页文章摘要
+index_post_content:
+  method: 2
+  length: 500
+
+# 文章目录
+toc:
+  post: true
+  page: false
+  number: true
+  expand: false
+  style_simple: false
+  scroll_percent: true
+
+# 页脚
+footer:
+  nav:
+  owner:
+    enable: true
+    since: 2026
+  copyright:
+    enable: true
+    version: true
+  custom_text: 'Powered by Hexo & Butterfly'
+
+# 侧栏
+aside:
+  enable: true
+  hide: false
+  button: true
+  mobile: true
+  position: right
+  display:
+    archive: true
+    tag: true
+    category: true
+  card_author:
+    enable: true
+    description: '一个热爱技术与音乐的人'
+    button:
+      enable: true
+      icon: fab fa-github
+      text: Follow Me
+      link: https://github.com/sovoyf999
+  card_announcement:
+    enable: true
+    content: '欢迎来到我的博客，这里记录技术与生活，也放点 Juice WRLD。'
+  card_recent_post:
+    enable: true
+    limit: 5
+    sort: date
+    sort_order:
+  card_newest_comments:
+    enable: false
+    sort_order:
+    limit: 6
+    storage: 10
+    avatar: true
+  card_categories:
+    enable: true
+    limit: 8
+    expand: none
+    sort_order:
+  card_tags:
+    enable: true
+    limit: 40
+    color: true
+    custom_colors:
+    orderby: random
+    order: 1
+    sort_order:
+  card_archives:
+    enable: true
+    type: monthly
+    format: MMMM YYYY
+    order: -1
+    limit: 8
+    sort_order:
+  card_post_series:
+    enable: false
+    series_title: false
+    orderBy: 'date'
+    order: -1
+  card_webinfo:
+    enable: true
+    post_count: true
+    last_push_date: true
+    sort_order:
+    runtime_date: '10/17/2026 22:00:00'
+
+# 右下角按钮显示滚动百分比
+rightside_scroll_percent: true
+
+# 暗色模式
+darkmode:
+  enable: true
+  button: true
+  autoChangeMode: false
+  start:
+  end:
+
+# 阅读模式
+readmode: true
+
+# 搜索（本地搜索）
+search:
+  use: local_search
+  placeholder: '搜索文章...'
+  algolia_search:
+    hitsPerPage: 6
+  local_search:
+    preload: false
+    top_n_per_article: 1
+    unescape: false
+    pagination:
+      enable: false
+      hitsPerPage: 8
+    CDN:
+  docsearch:
+    appId:
+    apiKey:
+    indexName:
+    option:
+
+# 加载动画
+preloader:
+  enable: true
+  source: 1
+  pace_css_url:
+
+# 默认显示暗色
+display_mode: dark
+
+# 文章标题美化
+beautify:
+  enable: false
+  field: post
+  title_prefix_icon:
+  title_prefix_icon_color:
+
+# ---------------------------------------------------------------
+# 注入 Juice WRLD 背景音乐播放器（本地 APlayer）
+# ---------------------------------------------------------------
+inject:
+  head:
+    - '<link rel="stylesheet" href="/css/aplayer.min.css">'
+    - '<link rel="stylesheet" href="/css/music.css">'
+  bottom:
+    - '<script src="/js/aplayer.min.js"></script>'
+    - '<script src="/js/music.js"></script>'

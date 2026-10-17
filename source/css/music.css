@@ -1,0 +1,48 @@
+/* =========================================================
+   Juice WRLD 背景音乐播放器样式（APlayer）
+   ========================================================= */
+
+/* 播放器层级，避免被页面元素遮挡 */
+.aplayer.aplayer-fixed {
+  z-index: 10000 !important;
+}
+
+/* 迷你圆形播放器的阴影 */
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
+  border-radius: 50% !important;
+}
+
+/* 展开后的播放列表 */
+.aplayer.aplayer-fixed .aplayer-list {
+  max-height: 260px;
+  border-radius: 0 0 10px 10px;
+}
+
+/* 当前播放/悬浮曲目高亮为主题色 */
+.aplayer .aplayer-list ol li.aplayer-list-light,
+.aplayer .aplayer-list ol li:hover {
+  background: rgba(99, 102, 241, 0.14) !important;
+}
+
+.aplayer .aplayer-info .aplayer-music .aplayer-title {
+  font-weight: 600;
+}
+
+/* 进度条颜色 */
+.aplayer .aplayer-info .aplayer-controller .aplayer-bar-wrap .aplayer-bar .aplayer-played,
+.aplayer .aplayer-info .aplayer-controller .aplayer-volume-wrap .aplayer-volume-bar-wrap .aplayer-volume-bar .aplayer-volume {
+  background: #6366f1 !important;
+}
+
+.aplayer .aplayer-info .aplayer-controller .aplayer-bar-wrap .aplayer-bar .aplayer-loaded {
+  background: rgba(99, 102, 241, 0.25) !important;
+}
+
+/* 移动端稍微上移，避免遮挡底部按钮 */
+@media screen and (max-width: 768px) {
+  .aplayer.aplayer-fixed {
+    left: 10px !important;
+    bottom: 64px !important;
+  }
+}
