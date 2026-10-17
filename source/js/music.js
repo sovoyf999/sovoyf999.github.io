@@ -80,6 +80,7 @@
     document.body.appendChild(wrap);
 
     el.wrap = wrap;
+    el.meta = wrap.querySelector('.jw-meta');
     el.title = wrap.querySelector('.jw-title');
     el.artist = wrap.querySelector('.jw-artist');
     el.play = wrap.querySelector('.jw-play');
