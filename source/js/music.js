@@ -216,9 +216,16 @@
   function mountAP(playNow) {
     if (typeof APlayer === 'undefined') return;
     useYT = false;
-    el.src.textContent = 'iTunes 官方 · 30秒试听';
+
+    // APlayer 必须挂到独立容器：它会给容器加 aplayer 类并注入 DOM，
+    // 若复用主容器会覆盖掉自绘的控制条。
+    var box = document.createElement('div');
+    box.id = 'jw-ap-host';
+    box.style.cssText = 'position:fixed;left:-9999px;top:0;width:1px;height:1px;overflow:hidden;';
+    document.body.appendChild(box);
+
     ap = new APlayer({
-      container: el.wrap,
+      container: box,
       fixed: false,
       mini: false,
       autoplay: false,
@@ -233,9 +240,6 @@
       }]
     });
     if (playNow) { try { ap.play(); playing = true; } catch (e) { /* noop */ } }
-    // 用我们的 UI 覆盖显示，APlayer 本体隐藏
-    var nativeBar = el.wrap.querySelector('.aplayer');
-    if (nativeBar) nativeBar.style.display = 'none';
     paint(playing);
     startTick();
   }
