@@ -1,0 +1,70 @@
+# ===============================================================
+# NexT 主题个性化配置（Alternate Theme Config，推荐方式）
+# 只写需要覆盖主题默认值的项，其余自动继承 themes/next/_config.yml
+# 这样做的好处：升级主题时不会产生合并冲突
+# 文档: https://theme-next.js.org/docs/getting-started/configuration
+# ===============================================================
+
+# ---------------------------------------------------------------
+# 外观方案: Muse | Mist | Pisces | Gemini
+# Muse 最简洁（单栏）；Gemini 带侧栏头像/社交，信息更丰富
+# ---------------------------------------------------------------
+scheme: Gemini
+
+# 暗色模式: true | false | auto
+darkmode: true
+
+# ---------------------------------------------------------------
+# 导航菜单（Key: /链接/ || 图标）
+# 新建页面后即可加入菜单，例如：
+#   hexo new page about  →  about: /about/ || fa fa-user
+# ---------------------------------------------------------------
+menu:
+  home: / || fa fa-home
+  about: /about/ || fa fa-user
+  archives: /archives/ || fa fa-archive
+  tags: /tags/ || fa fa-tags
+  categories: /categories/ || fa fa-layer-group
+
+menu_settings:
+  icons: true
+  badges: false
+
+# ---------------------------------------------------------------
+# 社交链接（把 yourname / 邮箱 换成你自己的）
+# ---------------------------------------------------------------
+social:
+  GitHub: https://github.com/yourname || fab fa-github
+  E-Mail: mailto:yourname@example.com || fa fa-envelope
+
+social_icons:
+  enable: true
+  icons_only: false
+  transition: false
+
+# ---------------------------------------------------------------
+# 侧栏头像：默认用主题自带图片，把自己的图片放到
+# site 目录的 source/images/avatar.png 后改为 /images/avatar.png
+# ---------------------------------------------------------------
+avatar:
+  url: /images/avatar.gif
+  rounded: true
+  rotated: true
+
+# 侧栏显示文章/分类/标签统计
+site_state: true
+
+# 文章目录（TOC）
+toc:
+  enable: true
+  number: true
+  expand_all: false
+  max_depth: 6
+
+# 页脚
+footer:
+  since: 2026
+  icon:
+    name: fa fa-heart
+    animated: true
+    color: "#ff0000"

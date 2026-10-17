@@ -1,0 +1,26 @@
+# ============================================================
+# Hexo 项目 .gitignore
+# 提交到 GitHub 的应该只有：配置、主题、文章等源码
+# ============================================================
+
+# ---- 依赖（用 package-lock.json 锁定版本，不提交 node_modules）----
+node_modules/
+
+# ---- 构建产物（hexo generate 的输出，部署时才生成）----
+public/
+
+# ---- 部署缓存（hexo-deployer-git 的工作目录）----
+.deploy_git/
+.deploy*/
+
+# ---- Hexo 本地缓存与日志 ----
+db.json
+*.log
+npm-debug.log*
+
+# ---- 多环境配置 ----
+_multiconfig.yml
+
+# ---- 操作系统杂物 ----
+.DS_Store
+Thumbs.db
