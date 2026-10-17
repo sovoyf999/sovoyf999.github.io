@@ -7,7 +7,7 @@ title: 我的博客
 subtitle: 记录技术与生活
 description: 一个基于 Hexo + GitHub Pages 的个人博客
 keywords: "Hexo, GitHub Pages, 博客"
-author: YourName
+author: sovoyf999
 language: zh-CN
 timezone: Asia/Shanghai
 
@@ -15,7 +15,7 @@ timezone: Asia/Shanghai
 ## If your site is put in a subdirectory, set url as 'https://example.com/blog' and root as '/blog/'
 ## GitHub Pages user site: https://yourname.github.io (no trailing slash)
 ## GitHub Pages project site: https://yourname.github.io/reponame
-url: https://yourname.github.io
+url: https://sovoyf999.github.io
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
@@ -117,6 +117,6 @@ theme: next
 ## https://yourname.github.io/<仓库名>，并相应修改上方 url 与 root。
 deploy:
   type: git
-  repo: https://github.com/yourname/yourname.github.io.git
+  repo: https://github.com/sovoyf999/sovoyf999.github.io.git
   branch: gh-pages
   message: "Site updated: {{ now('yyyy-MM-dd HH:mm:ss') }}"

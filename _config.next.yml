@@ -34,8 +34,8 @@ menu_settings:
 # 社交链接（把 yourname / 邮箱 换成你自己的）
 # ---------------------------------------------------------------
 social:
-  GitHub: https://github.com/yourname || fab fa-github
-  E-Mail: mailto:yourname@example.com || fa fa-envelope
+  GitHub: https://github.com/sovoyf999 || fab fa-github
+  E-Mail: mailto:suyufeng4399@outlook.com || fa fa-envelope
 
 social_icons:
   enable: true
