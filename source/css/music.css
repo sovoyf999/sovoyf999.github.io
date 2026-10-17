@@ -8,6 +8,7 @@
   bottom: 20px;
   z-index: 10000;
   width: 340px;
+  max-width: calc(100vw - 40px);
   border-radius: 16px;
   background: rgba(15, 18, 38, 0.82);
   backdrop-filter: blur(18px) saturate(140%);
@@ -276,10 +277,10 @@
 @media (max-width: 768px) {
   .jw-player {
     left: 10px;
-    right: 10px;
+    right: auto;
     bottom: 12px;
-    width: auto;
-    max-width: 100%;
+    width: calc(100vw - 20px);
+    max-width: calc(100vw - 20px);
     font-size: 12.5px;
   }
 
