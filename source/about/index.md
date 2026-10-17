@@ -1,12 +1,21 @@
 ---
-title: about
+title: 关于
 date: 2026-10-17 22:03:47
 ---
 
-欢迎来到我的个人博客，这里记录技术学习与生活随笔。
+## 你好，我是 sovoyf999
 
-- 博客框架：[Hexo](https://hexo.io/)
-- 主题：[NexT](https://theme-next.js.org/)
-- 托管：GitHub Pages
+欢迎来到我的个人博客。这里记录技术学习、折腾过程与生活随笔。
+
+### 这个博客
+
+- **框架**：[Hexo](https://hexo.io/)
+- **主题**：[NexT](https://theme-next.js.org/)（Gemini 方案，支持暗色模式）
+- **托管**：GitHub Pages
+- **源码**：[github.com/sovoyf999](https://github.com/sovoyf999)
+
+### 关于内容
+
+文章主要围绕编程、工具与效率展开，偶尔也会写点生活。所有文章均为个人学习记录，如有疏漏欢迎指正。
 
 你可以通过导航栏的「归档 / 标签 / 分类」浏览文章，也欢迎通过页脚的社交链接联系我。

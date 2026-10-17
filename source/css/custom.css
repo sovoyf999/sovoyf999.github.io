@@ -1,0 +1,112 @@
+/* =========================================================
+   自定义美化样式
+   加载方式：_config.next.yml -> inject.head -> /css/custom.css
+   ========================================================= */
+
+/* ---------- 主题色与链接色 ---------- */
+:root {
+  --theme-color: #6366f1;
+  --link-color: #4f46e5;
+  --link-hover-color: #4338ca;
+}
+
+/* ---------- 文本选中 ---------- */
+::selection {
+  background: rgba(99, 102, 241, 0.25);
+}
+
+/* ---------- 文章卡片：圆角 + 悬浮动效 ---------- */
+.post-block {
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.post-block:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* ---------- 侧栏头像：渐变光环 ---------- */
+.site-author-image {
+  border: 3px solid transparent !important;
+  background-image: linear-gradient(var(--content-bg-color), var(--content-bg-color)),
+    linear-gradient(135deg, #6366f1, #ec4899);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.28);
+  transition: transform 0.4s ease;
+}
+
+.site-author-image:hover {
+  transform: rotate(-6deg) scale(1.04);
+}
+
+/* ---------- 侧栏作者名：渐变文字 ---------- */
+.site-author-name {
+  background: linear-gradient(135deg, #6366f1, #ec4899);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* ---------- 代码块：圆角 ---------- */
+.highlight,
+figure.highlight,
+pre {
+  border-radius: 10px !important;
+}
+
+/* ---------- 引用块：左侧强调色 ---------- */
+blockquote {
+  border-left: 4px solid var(--theme-color) !important;
+  background: rgba(99, 102, 241, 0.06) !important;
+  border-radius: 0 8px 8px 0;
+  padding: 10px 16px;
+}
+
+/* ---------- 表格：圆角 + 斑马纹 ---------- */
+table {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+table tbody tr:nth-child(odd) {
+  background: rgba(99, 102, 241, 0.04);
+}
+
+/* ---------- 图片：圆角 ---------- */
+.post-body img {
+  border-radius: 10px;
+}
+
+/* ---------- 滚动条 ---------- */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.45);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.7);
+}
+
+/* ---------- 文章标题字距 ---------- */
+.post-title {
+  letter-spacing: 0.5px;
+}
+
+/* ---------- 导航菜单：悬浮强调 ---------- */
+.menu .menu-item a {
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.menu .menu-item a:hover {
+  transform: translateY(-1px);
+}

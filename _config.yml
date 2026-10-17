@@ -120,3 +120,12 @@ deploy:
   repo: https://github.com/sovoyf999/sovoyf999.github.io.git
   branch: gh-pages
   message: "Site updated: {{ now('yyyy-MM-dd HH:mm:ss') }}"
+
+# ---------------------------------------------------------------
+# 本地搜索索引（配合 NexT local_search）
+# ---------------------------------------------------------------
+search:
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000

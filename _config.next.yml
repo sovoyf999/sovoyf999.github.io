@@ -1,13 +1,11 @@
 # ===============================================================
 # NexT 主题个性化配置（Alternate Theme Config，推荐方式）
 # 只写需要覆盖主题默认值的项，其余自动继承 themes/next/_config.yml
-# 这样做的好处：升级主题时不会产生合并冲突
 # 文档: https://theme-next.js.org/docs/getting-started/configuration
 # ===============================================================
 
 # ---------------------------------------------------------------
 # 外观方案: Muse | Mist | Pisces | Gemini
-# Muse 最简洁（单栏）；Gemini 带侧栏头像/社交，信息更丰富
 # ---------------------------------------------------------------
 scheme: Gemini
 
@@ -16,8 +14,6 @@ darkmode: true
 
 # ---------------------------------------------------------------
 # 导航菜单（Key: /链接/ || 图标）
-# 新建页面后即可加入菜单，例如：
-#   hexo new page about  →  about: /about/ || fa fa-user
 # ---------------------------------------------------------------
 menu:
   home: / || fa fa-home
@@ -31,7 +27,7 @@ menu_settings:
   badges: false
 
 # ---------------------------------------------------------------
-# 社交链接（把 yourname / 邮箱 换成你自己的）
+# 社交链接
 # ---------------------------------------------------------------
 social:
   GitHub: https://github.com/sovoyf999 || fab fa-github
@@ -43,28 +39,111 @@ social_icons:
   transition: false
 
 # ---------------------------------------------------------------
-# 侧栏头像：默认用主题自带图片，把自己的图片放到
-# site 目录的 source/images/avatar.png 后改为 /images/avatar.png
+# 侧栏头像（使用 GitHub 头像，已下载到 source/images/avatar.png）
 # ---------------------------------------------------------------
 avatar:
-  url: /images/avatar.gif
+  url: /images/avatar.png
   rounded: true
   rotated: true
 
 # 侧栏显示文章/分类/标签统计
 site_state: true
 
+# ---------------------------------------------------------------
+# 阅读进度条
+# ---------------------------------------------------------------
+reading_progress:
+  enable: true
+  color: "#6366f1"
+  height: 3px
+
+# ---------------------------------------------------------------
+# 书签（记住阅读位置）
+# ---------------------------------------------------------------
+bookmark:
+  enable: true
+  color: "#6366f1"
+  save: auto
+
+# ---------------------------------------------------------------
+# 返回顶部
+# ---------------------------------------------------------------
+back2top:
+  enable: true
+  sidebar: false
+  scrollpercent: true
+
+# ---------------------------------------------------------------
+# 代码块：主题 + 一键复制
+# ---------------------------------------------------------------
+codeblock:
+  copy_button:
+    enable: true
+    show_result: true
+  theme:
+    light: default
+    dark: stackoverflow-dark
+
+# ---------------------------------------------------------------
+# 动效
+# ---------------------------------------------------------------
+motion:
+  enable: true
+  async: false
+  transition:
+    menu_item: fadeInDown
+    post_block: fadeIn
+    post_header: fadeInDown
+    post_body: fadeInDown
+    coll_header: fadeInLeft
+    sidebar: fadeInUp
+
+# ---------------------------------------------------------------
+# 本地搜索
+# ---------------------------------------------------------------
+local_search:
+  enable: true
+  trigger: auto
+  top_n_per_article: 1
+  unescape: false
+  preload: false
+
+# ---------------------------------------------------------------
 # 文章目录（TOC）
+# ---------------------------------------------------------------
 toc:
   enable: true
   number: true
   expand_all: false
   max_depth: 6
 
+# ---------------------------------------------------------------
+# 文章元信息：创建/更新时间、分类
+# ---------------------------------------------------------------
+post_meta:
+  item_text: true
+  created_at: true
+  updated_at:
+    enable: true
+    another_day: true
+  categories: true
+
+# ---------------------------------------------------------------
 # 页脚
+# ---------------------------------------------------------------
 footer:
   since: 2026
+  copyright: sovoyf999
+  powered: true
+  theme:
+    enable: true
   icon:
     name: fa fa-heart
     animated: true
     color: "#ff0000"
+
+# ---------------------------------------------------------------
+# 自定义头部（注入 /css/custom.css）
+# ---------------------------------------------------------------
+custom_file_path:
+  head: source/_data/head.njk
