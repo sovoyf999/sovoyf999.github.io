@@ -1,210 +1,441 @@
 /* =========================================================
-   背景音乐：APlayer 样式 + 悬浮开关按钮
+   背景音乐播放器（完全自绘）
+   深色毛玻璃 + 渐变按钮 + 声波动效
    ========================================================= */
 
-/* ---------- APlayer 本体 ---------- */
-.aplayer.aplayer-fixed {
-  z-index: 10000 !important;
-}
-
-.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.42) !important;
-  border-radius: 50% !important;
-  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.28s ease;
-}
-
-.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
-  transform: scale(1.08);
-  box-shadow: 0 14px 38px rgba(99, 102, 241, 0.4) !important;
-}
-
-.aplayer.aplayer-fixed .aplayer-list {
-  max-height: 260px;
-  border-radius: 0 0 12px 12px;
-  backdrop-filter: blur(20px) saturate(150%);
-  -webkit-backdrop-filter: blur(20px) saturate(150%);
-}
-
-.aplayer .aplayer-list ol li.aplayer-list-light,
-.aplayer .aplayer-list ol li:hover {
-  background: rgba(99, 102, 241, 0.16) !important;
-}
-
-.aplayer .aplayer-info .aplayer-music .aplayer-title {
-  font-weight: 600;
-}
-
-.aplayer .aplayer-info .aplayer-controller .aplayer-bar-wrap .aplayer-bar .aplayer-played,
-.aplayer .aplayer-info .aplayer-controller .aplayer-volume-wrap .aplayer-volume-bar-wrap .aplayer-volume-bar .aplayer-volume {
-  background: #6366f1 !important;
-}
-
-.aplayer .aplayer-info .aplayer-controller .aplayer-bar-wrap .aplayer-bar .aplayer-loaded {
-  background: rgba(99, 102, 241, 0.25) !important;
-}
-
-/* =========================================================
-   悬浮开关按钮（解决自动播放限制）
-   ========================================================= */
-#music-toggle {
+/* ---------- 主体容器 ---------- */
+.jw-player {
   position: fixed;
-  right: 22px;
-  bottom: 24px;
-  z-index: 10001;
+  left: 20px;
+  bottom: 20px;
+  z-index: 10000;
+  width: 336px;
+  max-width: calc(100vw - 40px);
+  padding: 14px;
+  border-radius: 20px;
+  background: linear-gradient(145deg, rgba(28, 32, 66, 0.9) 0%, rgba(15, 18, 38, 0.94) 100%);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 18px 48px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  color: #e8eaf6;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-size: 13px;
+  user-select: none;
+  transition: box-shadow 0.35s ease;
+  animation: jw-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes jw-in {
+  from { opacity: 0; transform: translateY(18px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.jw-player:hover {
+  box-shadow:
+    0 22px 60px rgba(0, 0, 0, 0.58),
+    0 0 0 1px rgba(129, 140, 248, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+
+/* ---------- 封面 ---------- */
+.jw-cover {
+  position: relative;
+  width: 100%;
+  height: 172px;
+  margin-bottom: 13px;
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #1e1b4b;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.jw-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.jw-player.is-playing .jw-cover-img {
+  animation: jw-zoom 14s ease-in-out infinite alternate;
+}
+
+@keyframes jw-zoom {
+  from { transform: scale(1); }
+  to   { transform: scale(1.07); }
+}
+
+.jw-cover-mask {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.5) 100%);
+  pointer-events: none;
+}
+
+/* 封面中央播放键 */
+.jw-bigplay {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   width: 52px;
   height: 52px;
-  padding: 0;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.24);
   border-radius: 50%;
-  background: rgba(15, 18, 38, 0.78);
-  backdrop-filter: blur(16px) saturate(150%);
-  -webkit-backdrop-filter: blur(16px) saturate(150%);
-  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background 0.28s ease;
+}
+
+.jw-bigplay::after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 0;
+  margin-left: 4px;
+  border-left: 17px solid rgba(255, 255, 255, 0.95);
+  border-top: 11px solid transparent;
+  border-bottom: 11px solid transparent;
+  transition: all 0.2s ease;
+}
+
+/* 播放中变成暂停双竖条 */
+.jw-player.is-playing .jw-bigplay::after {
+  width: 13px;
+  height: 17px;
+  margin-left: 0;
+  border: none;
+  background: linear-gradient(90deg,
+    rgba(255, 255, 255, 0.95) 0 5px,
+    transparent 5px 8px,
+    rgba(255, 255, 255, 0.95) 8px 13px);
+}
+
+.jw-bigplay:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+  background: rgba(99, 102, 241, 0.5);
+}
+
+/* 未播放时的呼吸提示环 */
+.jw-cover-bars {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  z-index: 1;
+  pointer-events: none;
+  display: none;
+}
+
+.jw-player:not(.is-playing) .jw-cover-bars {
+  display: block;
+  animation: jw-halo 2.6s ease-out infinite;
+}
+
+@keyframes jw-halo {
+  0%   { transform: translate(-50%, -50%) scale(0.82); opacity: 0.75; }
+  70%  { transform: translate(-50%, -50%) scale(1.35); opacity: 0; }
+  100% { transform: translate(-50%, -50%) scale(1.35); opacity: 0; }
+}
+
+/* ---------- 歌名 / 歌手 ---------- */
+.jw-body { margin-bottom: 11px; }
+.jw-meta { margin-bottom: 10px; }
+
+.jw-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.35;
+  letter-spacing: 0.1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 3px;
+}
+
+.jw-artist {
+  font-size: 12px;
+  color: #9aa0c0;
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- 控制按钮 ---------- */
+.jw-ctrl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.jw-btn {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.26s cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.26s ease, background 0.26s ease;
-  -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s ease, transform 0.18s ease;
 }
 
-#music-toggle:hover {
-  transform: translateY(-3px) scale(1.06);
-  background: rgba(30, 27, 75, 0.88);
-  box-shadow: 0 12px 32px rgba(99, 102, 241, 0.42);
+.jw-btn svg {
+  width: 15px;
+  height: 15px;
+  fill: #b9bfe0;
+  transition: fill 0.2s ease;
 }
 
-#music-toggle:active {
-  transform: scale(0.94);
-}
+.jw-btn:hover { background: rgba(129, 140, 248, 0.16); }
+.jw-btn:hover svg { fill: #ffffff; }
+.jw-btn:active { transform: scale(0.9); }
 
-/* 未播放时的呼吸光环 */
-#music-toggle .mt-ring {
-  position: absolute;
-  inset: -4px;
+.jw-btn.jw-play {
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  border: 1.5px solid rgba(99, 102, 241, 0.5);
-  opacity: 0;
-  pointer-events: none;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.45);
 }
 
-#music-toggle:not(.is-playing) .mt-ring {
-  animation: mt-pulse 2.4s ease-out infinite;
+.jw-btn.jw-play svg {
+  width: 17px;
+  height: 17px;
+  fill: #ffffff;
 }
 
-@keyframes mt-pulse {
-  0% { transform: scale(1); opacity: 0.7; }
-  70% { transform: scale(1.45); opacity: 0; }
-  100% { transform: scale(1.45); opacity: 0; }
+.jw-btn.jw-play:hover {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  box-shadow: 0 6px 22px rgba(99, 102, 241, 0.6);
 }
 
-/* 声波图标：4 根跳动竖条 */
-#music-toggle .mt-ico {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 2.5px;
-  height: 18px;
-}
+/* 播放/暂停图标切换 */
+.ic-pause { display: none; }
+.jw-player.is-playing .ic-play { display: none; }
+.jw-player.is-playing .ic-pause { display: block; }
 
-#music-toggle .mt-bars {
-  display: flex;
-  align-items: flex-end;
-  gap: 2.5px;
-  height: 100%;
-}
-
-#music-toggle .mt-bars i {
-  display: block;
-  width: 2.5px;
-  height: 6px;
-  border-radius: 2px;
-  background: #a5b4fc;
-  transition: background 0.26s ease;
-}
-
-#music-toggle:hover .mt-bars i {
-  background: #c7d2fe;
-}
-
-/* 未播放：静止在低位 */
-#music-toggle:not(.is-playing) .mt-bars i:nth-child(1) { height: 7px; }
-#music-toggle:not(.is-playing) .mt-bars i:nth-child(2) { height: 11px; }
-#music-toggle:not(.is-playing) .mt-bars i:nth-child(3) { height: 8px; }
-#music-toggle:not(.is-playing) .mt-bars i:nth-child(4) { height: 5px; }
-
-/* 播放中：逐根跳动 */
-#music-toggle.is-playing .mt-bars i {
-  background: #818cf8;
-  animation: mt-eq 0.9s ease-in-out infinite;
-}
-
-#music-toggle.is-playing .mt-bars i:nth-child(1) { animation-delay: 0s; }
-#music-toggle.is-playing .mt-bars i:nth-child(2) { animation-delay: 0.18s; }
-#music-toggle.is-playing .mt-bars i:nth-child(3) { animation-delay: 0.36s; }
-#music-toggle.is-playing .mt-bars i:nth-child(4) { animation-delay: 0.54s; }
-
-@keyframes mt-eq {
-  0%, 100% { height: 5px; }
-  50% { height: 17px; }
-}
-
-/* 悬浮提示文字 */
-#music-toggle .mt-tip {
-  position: absolute;
-  right: calc(100% + 10px);
-  top: 50%;
-  transform: translateY(-50%) scale(0.9);
-  padding: 5px 10px;
-  border-radius: 8px;
-  background: rgba(15, 18, 38, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #d6daef;
-  font-size: 11.5px;
+.mt-mode-ic {
+  font-size: 15px;
+  color: #b9bfe0;
   line-height: 1;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.22s ease, transform 0.22s ease;
+  transition: color 0.2s ease;
 }
 
-#music-toggle:hover .mt-tip {
-  opacity: 1;
-  transform: translateY(-50%) scale(1);
+.jw-btn:hover .mt-mode-ic { color: #ffffff; }
+
+/* ---------- 进度 / 时间 / 音量 ---------- */
+.jw-foot {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.jw-time {
+  flex: 0 0 auto;
+  font-size: 10.5px;
+  color: #858bab;
+  font-variant-numeric: tabular-nums;
+  min-width: 30px;
+  text-align: center;
+}
+
+.jw-prog {
+  flex: 1 1 auto;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.13);
+  cursor: pointer;
+  position: relative;
+}
+
+/* 扩大点击热区 */
+.jw-prog::before {
+  content: '';
+  position: absolute;
+  inset: -7px 0;
+}
+
+.jw-prog-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #6366f1, #a855f7);
+  transition: width 0.22s linear;
+  position: relative;
+}
+
+.jw-prog-fill::after {
+  content: '';
+  position: absolute;
+  right: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 8px rgba(99, 102, 241, 0.9);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.jw-prog:hover .jw-prog-fill::after { opacity: 1; }
+
+/* 音量 */
+.jw-vol {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.jw-vol-ico {
+  font-size: 11px;
+  color: #8f96bd;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.jw-vol-in {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 52px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.18);
+  outline: none;
+  cursor: pointer;
+}
+
+.jw-vol-in::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #a5b4fc;
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(99, 102, 241, 0.7);
+}
+
+.jw-vol-in::-moz-range-thumb {
+  width: 11px;
+  height: 11px;
+  border: none;
+  border-radius: 50%;
+  background: #a5b4fc;
+  cursor: pointer;
+}
+
+/* ---------- 播放列表（点封面展开） ---------- */
+.jw-list {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    margin-top 0.38s ease;
+  margin-top: 0;
+}
+
+.jw-player.list-open .jw-list {
+  max-height: 230px;
+  overflow-y: auto;
+  margin-top: 12px;
+}
+
+.jw-list::-webkit-scrollbar { width: 4px; }
+.jw-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 2px;
+}
+
+.jw-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+
+.jw-item:hover { background: rgba(129, 140, 248, 0.12); }
+.jw-item.on   { background: rgba(129, 140, 248, 0.18); }
+
+.jw-n {
+  flex: 0 0 16px;
+  font-size: 10px;
+  color: #6f76a0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.jw-t {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 12px;
+  color: #d6daef;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.jw-item.on .jw-t {
+  color: #a5b4fc;
+  font-weight: 600;
+}
+
+.jw-a {
+  flex: 0 0 auto;
+  font-size: 10px;
+  color: #6f76a0;
+  white-space: nowrap;
 }
 
 /* ---------- 响应式 ---------- */
 @media screen and (max-width: 768px) {
-  .aplayer.aplayer-fixed {
-    left: 10px !important;
-    bottom: 78px !important;
+  .jw-player {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    width: auto;
+    max-width: none;
+    padding: 12px;
+    border-radius: 18px;
   }
 
-  #music-toggle {
-    right: 14px;
-    bottom: 16px;
-    width: 46px;
-    height: 46px;
-  }
-
-  #music-toggle .mt-bars i {
-    width: 2px;
-  }
-
-  #music-toggle.is-playing .mt-bars i { animation-duration: 1s; }
+  .jw-cover { height: 148px; }
+  .jw-vol  { display: none; }
+  .jw-player.list-open .jw-list { max-height: 180px; }
 }
 
-/* 尊重系统「减少动态效果」偏好 */
+/* ---------- 减少动态效果 ---------- */
 @media (prefers-reduced-motion: reduce) {
-  #music-toggle .mt-ring,
-  #music-toggle.is-playing .mt-bars i {
-    animation: none !important;
-  }
-
-  #music-toggle,
-  .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
-    transition: none !important;
-  }
+  .jw-player { animation: none; }
+  .jw-player:not(.is-playing) .jw-cover-bars { animation: none; }
+  .jw-player.is-playing .jw-cover-img { animation: none; }
+  .jw-player,
+  .jw-bigplay,
+  .jw-list { transition: none !important; }
 }

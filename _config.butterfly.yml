@@ -227,9 +227,7 @@ beautify:
 # ---------------------------------------------------------------
 inject:
   head:
-    - '<link rel="stylesheet" href="/css/aplayer.min.css">'
     - '<link rel="stylesheet" href="/css/music.css">'
     - '<link rel="stylesheet" href="/css/custom.css">'
   bottom:
-    - '<script src="/js/aplayer.min.js"></script>'
     - '<script src="/js/music.js"></script>'

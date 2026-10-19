@@ -1,21 +1,25 @@
 /* =========================================================
-   博客背景音乐播放器（APlayer）
-   音频来源：Apple iTunes 官方公开试听（30 秒片段）
+   背景音乐播放器（完全自绘，不使用 APlayer UI）
+   ---------------------------------------------------------
+   为什么不用 APlayer 自带 UI：
+     APlayer 会把 aplayer 类直接挂到传入容器上，并对 .aplayer-info
+     注入 transform:scaleX(0)，导致歌名区宽度为 0（歌名看不见）；
+     它还强制白底 #fff，与深色站点冲突。
+   方案：原生 <audio> + 自绘 UI，外观与行为完全可控。
 
-   自动播放策略：
-     浏览器对「有声自动播放」有硬性拦截，脚本无法绕过。
-     本方案流程：
-       1. 首次访问 -> 显示一个不遮挡内容的音乐开关按钮
-       2. 用户点一次 -> 播放，并把偏好写入 localStorage
-       3. 以后访问 -> 静音自动播放（浏览器允许 muted autoplay）
-       4. 随时点按钮 -> 暂停/ 恢复
+   自动播放：
+     浏览器硬性拦截有声自动播放。策略：
+       1. 首次访问 -> 显示「开启音乐」按钮 + 呼吸光环引导
+       2. 用户点一次 -> 播放，偏好写入 localStorage
+       3. 之后访问 -> 静音自动播放（浏览器允许），随后恢复音量
    ========================================================= */
 (function () {
   'use strict';
 
   var STORE_KEY = 'blog_music_on';
+  var VOLUME = 0.45;
 
-  var PLAYLIST = [
+  var TRACKS = [
     {
       name: 'Wasted (feat. Lil Uzi Vert)',
       artist: 'Juice WRLD',
@@ -63,111 +67,225 @@
   function readPref() {
     try { return localStorage.getItem(STORE_KEY) === '1'; } catch (e) { return false; }
   }
-
   function writePref(v) {
     try {
       if (v) localStorage.setItem(STORE_KEY, '1');
       else localStorage.removeItem(STORE_KEY);
-    } catch (e) { /* 隐私模式忽略 */ }
+    } catch (e) { /* 隐私模式 */ }
   }
-
-  /* ---------- 悬浮开关按钮 ---------- */
-  function buildToggle(onClick) {
-    var btn = document.createElement('button');
-    btn.id = 'music-toggle';
-    btn.type = 'button';
-    btn.setAttribute('aria-label', '背景音乐开关');
-    btn.title = '背景音乐';
-    btn.innerHTML =
-      '<span class="mt-ring"></span>' +
-      '<span class="mt-ico"><span class="mt-bars"><i></i><i></i><i></i><i></i></span></span>' +
-      '<span class="mt-tip">开启音乐</span>';
-    document.body.appendChild(btn);
-    btn.addEventListener('click', onClick);
-    return btn;
-  }
-
-  function setToggleState(btn, playing) {
-    btn.classList.toggle('is-playing', !!playing);
-    var tip = btn.querySelector('.mt-tip');
-    if (tip) tip.textContent = playing ? '暂停音乐' : '开启音乐';
-    btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
+  function fmt(s) {
+    if (!s || isNaN(s) || s < 0) s = 0;
+    var m = Math.floor(s / 60), x = Math.floor(s % 60);
+    return m + ':' + (x < 10 ? '0' : '') + x;
   }
 
   function init() {
-    if (typeof APlayer === 'undefined') {
-      console.warn('[music] APlayer 未加载');
-      return;
+    /* ---------- 真实音频元素 ---------- */
+    var audio = document.createElement('audio');
+    audio.id = 'jw-audio';
+    audio.preload = 'metadata';
+    document.body.appendChild(audio);
+
+    var idx = 0;
+
+    /* ---------- UI ---------- */
+    var ui = document.createElement('div');
+    ui.id = 'jw-player';
+    ui.className = 'jw-player';
+    ui.innerHTML =
+      '<div class="jw-cover">' +
+        '<img class="jw-cover-img" alt="">' +
+        '<span class="jw-cover-mask"></span>' +
+        '<span class="jw-cover-bars"><i></i><i></i><i></i><i></i></span>' +
+        '<button class="jw-bigplay" aria-label="播放或暂停"></button>' +
+      '</div>' +
+      '<div class="jw-body">' +
+        '<div class="jw-meta">' +
+          '<div class="jw-title">—</div>' +
+          '<div class="jw-artist">—</div>' +
+        '</div>' +
+        '<div class="jw-ctrl">' +
+          '<button class="jw-btn jw-prev" aria-label="上一首" title="上一首">' +
+            '<svg viewBox="0 0 24 24"><path d="M7 6h2.5v12H7zM20 6v12l-9.5-6z"/></svg></button>' +
+          '<button class="jw-btn jw-play" aria-label="播放" title="播放">' +
+            '<svg class="ic-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>' +
+            '<svg class="ic-pause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></button>' +
+          '<button class="jw-btn jw-next" aria-label="下一首" title="下一首">' +
+            '<svg viewBox="0 0 24 24"><path d="M14.5 6H17v12h-2.5zM4 6v12l9.5-6z"/></svg></button>' +
+          '<button class="jw-btn jw-mode" aria-label="播放模式" title="列表循环">' +
+            '<span class="mt-mode-ic">&#x21BB;</span></button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="jw-foot">' +
+        '<span class="jw-time jw-cur">0:00</span>' +
+        '<div class="jw-prog"><div class="jw-prog-fill"></div></div>' +
+        '<span class="jw-time jw-dur">0:00</span>' +
+        '<span class="jw-vol">' +
+          '<span class="jw-vol-ico">&#x1F50A;</span>' +
+          '<input class="jw-vol-in" type="range" min="0" max="100" value="' + Math.round(VOLUME * 100) + '" aria-label="音量">' +
+        '</span>' +
+      '</div>' +
+      '<div class="jw-list"></div>';
+    document.body.appendChild(ui);
+
+    var q = function (s) { return ui.querySelector(s); };
+    var elCover = q('.jw-cover-img');
+    var elTitle = q('.jw-title');
+    var elArtist = q('.jw-artist');
+    var elFill = q('.jw-prog-fill');
+    var elCur = q('.jw-cur');
+    var elDur = q('.jw-dur');
+    var elList = q('.jw-list');
+    var elPlay = q('.jw-play');
+    var elProg = q('.jw-prog');
+    var elMode = q('.jw-mode');
+    var elVolIn = q('.jw-vol-in');
+
+    var html = '';
+    TRACKS.forEach(function (t, i) {
+      html += '<div class="jw-item' + (i === 0 ? ' on' : '') + '" data-i="' + i + '">' +
+        '<span class="jw-n">' + (i + 1) + '</span>' +
+        '<span class="jw-t">' + t.name + '</span>' +
+        '<span class="jw-a">' + t.artist + '</span></div>';
+    });
+    elList.innerHTML = html;
+
+    var modes = ['all', 'one', 'shuffle'];
+    var modeIcs = ['&#x21BB;', '&#x267B;', '&#x1F500;'];
+    var modeNames = ['列表循环', '单曲循环', '随机播放'];
+    var mode = 'all';
+
+    function paintTrack() {
+      var t = TRACKS[idx];
+      elTitle.textContent = t.name;
+      elArtist.textContent = t.artist;
+      elCover.src = t.cover;
+      Array.prototype.forEach.call(elList.children, function (c, i) {
+        c.classList.toggle('on', i === idx);
+      });
     }
 
-    var container = document.createElement('div');
-    container.id = 'music-player';
-    container.className = 'music-player';
-    document.body.appendChild(container);
+    function setPlaying(on) {
+      ui.classList.toggle('is-playing', !!on);
+      elPlay.title = on ? '暂停' : '播放';
+      elPlay.setAttribute('aria-label', on ? '暂停' : '播放');
+      writePref(!!on);
+    }
 
-    var wanted = readPref();   // 用户此前是否开过音乐
-    var playing = false;
+    function load(i, autoplay) {
+      idx = (i + TRACKS.length) % TRACKS.length;
+      audio.src = TRACKS[idx].url;
+      audio.volume = VOLUME;
+      paintTrack();
+      elCur.textContent = '0:00';
+      elFill.style.width = '0%';
+      if (autoplay) audio.play().catch(function () { setPlaying(false); });
+    }
 
-    var player = new APlayer({
-      container: container,
-      fixed: true,
-      mini: true,
-      autoplay: false,
-      theme: '#6366f1',
-      loop: 'all',
-      order: 'random',
-      preload: 'metadata',
-      volume: 0.35,
-      mutex: true,
-      listFolded: true,
-      listMaxHeight: '260px',
-      lrcType: 0,
-      audio: PLAYLIST
+    function play() {
+      audio.play().then(function () { setPlaying(true); })
+        .catch(function () { setPlaying(false); });
+    }
+    function pause() { audio.pause(); setPlaying(false); }
+
+    elPlay.addEventListener('click', function () {
+      if (audio.paused) play(); else pause();
+    });
+    q('.jw-bigplay').addEventListener('click', function () {
+      if (audio.paused) play(); else pause();
+    });
+    q('.jw-prev').addEventListener('click', function () { load(idx - 1, !audio.paused); });
+    q('.jw-next').addEventListener('click', function () { load(idx + 1, true); });
+
+    elMode.addEventListener('click', function () {
+      var i = (modes.indexOf(mode) + 1) % modes.length;
+      mode = modes[i];
+      q('.mt-mode-ic').innerHTML = modeIcs[i];
+      elMode.title = modeNames[i];
     });
 
-    var toggle = buildToggle(function () {
-      if (playing) {
-        player.pause();
-        playing = false;
-        writePref(false);
-        setToggleState(toggle, false);
-        return;
+    elVolIn.addEventListener('input', function () {
+      VOLUME = this.value / 100;
+      audio.volume = VOLUME;
+      audio.muted = false;
+    });
+
+    function seek(e) {
+      var rect = elProg.getBoundingClientRect();
+      var ratio = (e.clientX - rect.left) / rect.width;
+      if (ratio < 0) ratio = 0;
+      if (ratio > 1) ratio = 1;
+      if (audio.duration) audio.currentTime = ratio * audio.duration;
+    }
+    var dragging = false;
+    elProg.addEventListener('mousedown', function (e) { dragging = true; seek(e); });
+    document.addEventListener('mousemove', function (e) { if (dragging) seek(e); });
+    document.addEventListener('mouseup', function () { dragging = false; });
+
+    elList.addEventListener('click', function (e) {
+      var it = e.target.closest('.jw-item');
+      if (it) load(parseInt(it.dataset.i, 10), true);
+    });
+
+    q('.jw-cover').addEventListener('click', function (e) {
+      if (e.target.closest('.jw-bigplay')) return;
+      ui.classList.toggle('list-open');
+    });
+
+    audio.addEventListener('timeupdate', function () {
+      if (!audio.duration) return;
+      elFill.style.width = (audio.currentTime / audio.duration * 100) + '%';
+      elCur.textContent = fmt(audio.currentTime);
+    });
+    audio.addEventListener('loadedmetadata', function () {
+      elDur.textContent = fmt(audio.duration);
+    });
+    audio.addEventListener('play', function () { setPlaying(true); });
+    audio.addEventListener('pause', function () { setPlaying(false); });
+    audio.addEventListener('ended', function () {
+      if (mode === 'one') { audio.currentTime = 0; play(); return; }
+      var next;
+      if (mode === 'shuffle') {
+        do { next = Math.floor(Math.random() * TRACKS.length); } while (next === idx);
+      } else {
+        next = idx + 1;
       }
-      try {
-        player.volume(0.35, true);
-        player.play();
-        playing = true;
-        writePref(true);
-        setToggleState(toggle, true);
-      } catch (e) { /* 忽略 */ }
+      load(next, true);
     });
 
-    player.on('play', function () { playing = true; setToggleState(toggle, true); });
-    player.on('pause', function () { playing = false; setToggleState(toggle, false); });
-    player.on('canplay', function () {
-      if (wanted) { playing = true; setToggleState(toggle, true); }
-    });
+    /* ---------- 自动播放 ---------- */
+    var wanted = readPref();
+    load(0, false);
 
-    // 用户此前开过音乐 -> 静音自动播放（浏览器允许 muted autoplay）
     if (wanted) {
-      player.volume(0.0001, false);
-      try { player.play(); } catch (e) { /* noop */ }
+      audio.volume = 0.0001;      // 静音起播，浏览器允许
+      audio.muted = false;
+      audio.play().then(function () {
+        audio.volume = VOLUME;     // 立刻恢复有声
+        setPlaying(true);
+      }).catch(function () {
+        setPlaying(false);         // 被拦截，等用户点
+      });
+    } else {
+      setPlaying(false);
     }
-    setToggleState(toggle, wanted);
 
-    // 兜底：已有过页面交互但因策略没播成时，补一次
+    // 首次任意交互时，若偏好是开的，立刻恢复有声
     var armed = false;
     function arm() {
       if (armed) return;
       armed = true;
-      if (wanted && !playing) {
-        try { player.volume(0.35, true); player.play(); } catch (e) { /* noop */ }
-      }
+      if (!wanted) return;
+      audio.volume = VOLUME;
+      audio.muted = false;
+      if (audio.paused) audio.play().catch(function () {});
     }
-    document.addEventListener('click', arm, { once: true });
-    document.addEventListener('touchstart', arm, { once: true });
+    ['click', 'touchstart', 'keydown'].forEach(function (ev) {
+      document.addEventListener(ev, arm, { once: true, passive: true });
+    });
 
-    window.__musicPlayer = player;
+    window.__jwAudio = audio;
+    window.__jwPlayer = ui;
   }
 
   if (document.readyState === 'loading') {
