@@ -1,112 +1,204 @@
 /* =========================================================
-   自定义美化样式
-   加载方式：_config.next.yml -> inject.head -> /css/custom.css
+   站点自定义美化（Butterfly 主题）
+   加载方式：_config.butterfly.yml -> inject.head -> /css/custom.css
    ========================================================= */
 
-/* ---------- 主题色与链接色 ---------- */
-:root {
-  --theme-color: #6366f1;
-  --link-color: #4f46e5;
-  --link-hover-color: #4338ca;
+/* ---------- 1. 全局细节打磨 ---------- */
+
+/* 正文文字更舒展，行高与字重微调 */
+#main-content .content {
+  line-height: 1.85;
+  letter-spacing: 0.2px;
 }
 
-/* ---------- 文本选中 ---------- */
-::selection {
-  background: rgba(99, 102, 241, 0.25);
+/* 段落之间的呼吸感 */
+#main-content .content p {
+  margin: 1.1em 0;
 }
 
-/* ---------- 文章卡片：圆角 + 悬浮动效 ---------- */
-.post-block {
-  border-radius: 14px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+/* 正文中的加粗用主题色强调 */
+#main-content .content strong {
+  color: #a5b4fc;
+  font-weight: 600;
 }
 
-.post-block:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+/* 站内链接：去掉下划线，hover 时出现 */
+#main-content .content a,
+#main-content .content a:visited {
+  color: #818cf8;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(129, 140, 248, 0.32);
+  transition: color 0.2s, border-color 0.2s;
 }
 
-/* ---------- 侧栏头像：渐变光环 ---------- */
-.site-author-image {
-  border: 3px solid transparent !important;
-  background-image: linear-gradient(var(--content-bg-color), var(--content-bg-color)),
-    linear-gradient(135deg, #6366f1, #ec4899);
-  background-origin: border-box;
-  background-clip: content-box, border-box;
-  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.28);
-  transition: transform 0.4s ease;
+#main-content .content a:hover {
+  color: #c7d2fe;
+  border-bottom-color: rgba(199, 210, 254, 0.75);
 }
 
-.site-author-image:hover {
-  transform: rotate(-6deg) scale(1.04);
-}
+/* ---------- 2. 标题层级 ---------- */
 
-/* ---------- 侧栏作者名：渐变文字 ---------- */
-.site-author-name {
-  background: linear-gradient(135deg, #6366f1, #ec4899);
+/* 文章标题渐变文字 */
+#main-content .article-title {
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  background: linear-gradient(120deg, #e2e8ff 0%, #a5b4fc 45%, #f0abfc 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-weight: 700;
-  letter-spacing: 0.5px;
+  -webkit-background-clip: text;
 }
 
-/* ---------- 代码块：圆角 ---------- */
-.highlight,
-figure.highlight,
-pre {
-  border-radius: 10px !important;
+/* 二级标题：左侧主题色竖线 */
+#main-content .content h2 {
+  position: relative;
+  padding-left: 14px;
+  margin-top: 2em;
 }
 
-/* ---------- 引用块：左侧强调色 ---------- */
-blockquote {
-  border-left: 4px solid var(--theme-color) !important;
-  background: rgba(99, 102, 241, 0.06) !important;
-  border-radius: 0 8px 8px 0;
-  padding: 10px 16px;
+#main-content .content h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.28em;
+  bottom: 0.28em;
+  width: 4px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #6366f1, #a855f7);
 }
 
-/* ---------- 表格：圆角 + 斑马纹 ---------- */
-table {
-  border-radius: 10px;
+/* 三级标题：小圆点 */
+#main-content .content h3 {
+  position: relative;
+  padding-left: 18px;
+}
+
+#main-content .content h3::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 0.55em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #818cf8;
+  box-shadow: 0 0 8px rgba(129, 140, 248, 0.7);
+}
+
+/* ---------- 3. 文章卡片与列表 ---------- */
+
+/* 首页文章卡片：悬浮微抬 + 边框高亮 */
+.blog-container .blog-tags,
+#aside .card {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+#aside .card {
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
   overflow: hidden;
+  transition: border-color 0.28s ease, transform 0.28s ease,
+    box-shadow 0.28s ease;
 }
 
-table tbody tr:nth-child(odd) {
-  background: rgba(99, 102, 241, 0.04);
+#aside .card:hover {
+  border-color: rgba(129, 140, 248, 0.34);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.32);
 }
 
-/* ---------- 图片：圆角 ---------- */
-.post-body img {
-  border-radius: 10px;
+/* ---------- 4. 代码块 ---------- */
+
+/* 行号栏与代码区背景更分明 */
+#main-content .highlight .gutter {
+  background: rgba(0, 0, 0, 0.22);
 }
 
-/* ---------- 滚动条 ---------- */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+#main-content .highlight .code {
+  border-radius: 0 10px 10px 0;
 }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.45);
-  border-radius: 4px;
+/* ---------- 5. 引用块 ---------- */
+
+#main-content .content blockquote {
+  border-left: 3px solid #6366f1;
+  border-radius: 0 8px 8px 0;
+  background: rgba(99, 102, 241, 0.07);
+  padding: 0.9em 1.2em;
+  transition: background 0.25s ease;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.7);
+#main-content .content blockquote:hover {
+  background: rgba(99, 102, 241, 0.12);
 }
 
-/* ---------- 文章标题字距 ---------- */
-.post-title {
-  letter-spacing: 0.5px;
+/* ---------- 6. 图片 ---------- */
+
+#main-content .content img {
+  border-radius: 12px;
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.34);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease;
 }
 
-/* ---------- 导航菜单：悬浮强调 ---------- */
-.menu .menu-item a {
-  transition: color 0.2s ease, transform 0.2s ease;
+#main-content .content img:hover {
+  transform: translateY(-4px) scale(1.012);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.46);
 }
 
-.menu .menu-item a:hover {
-  transform: translateY(-1px);
+/* ---------- 7. 滚动条（桌面端） ---------- */
+
+@media screen and (min-width: 769px) {
+  ::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(129, 140, 248, 0.32);
+    border-radius: 5px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(129, 140, 248, 0.55);
+  }
+}
+
+/* ---------- 8. 返回顶部按钮 ---------- */
+
+#totop {
+  border-radius: 50%;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background 0.25s ease;
+}
+
+#totop:hover {
+  transform: translateY(-3px) scale(1.08);
+  background: #6366f1;
+}
+
+/* ---------- 9. 选中态 ---------- */
+
+::selection {
+  background: rgba(99, 102, 241, 0.42);
+  color: #fff;
+}
+
+/* ---------- 10. 减少动态效果适配 ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  #main-content .content img:hover,
+  #aside .card:hover,
+  #totop:hover,
+  #main-content .content blockquote {
+    transition: none !important;
+  }
+
+  #main-content .content img:hover {
+    transform: none;
+  }
 }

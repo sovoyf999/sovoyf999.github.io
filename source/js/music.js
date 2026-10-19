@@ -1,9 +1,19 @@
 /* =========================================================
-   Juice WRLD 背景音乐播放器（APlayer）
+   博客背景音乐播放器（APlayer）
    音频来源：Apple iTunes 官方公开试听（30 秒片段）
+
+   自动播放策略：
+     浏览器对「有声自动播放」有硬性拦截，脚本无法绕过。
+     本方案流程：
+       1. 首次访问 -> 显示一个不遮挡内容的音乐开关按钮
+       2. 用户点一次 -> 播放，并把偏好写入 localStorage
+       3. 以后访问 -> 静音自动播放（浏览器允许 muted autoplay）
+       4. 随时点按钮 -> 暂停/ 恢复
    ========================================================= */
 (function () {
   'use strict';
+
+  var STORE_KEY = 'blog_music_on';
 
   var PLAYLIST = [
     {
@@ -50,22 +60,59 @@
     }
   ];
 
-  function initMusic() {
+  function readPref() {
+    try { return localStorage.getItem(STORE_KEY) === '1'; } catch (e) { return false; }
+  }
+
+  function writePref(v) {
+    try {
+      if (v) localStorage.setItem(STORE_KEY, '1');
+      else localStorage.removeItem(STORE_KEY);
+    } catch (e) { /* 隐私模式忽略 */ }
+  }
+
+  /* ---------- 悬浮开关按钮 ---------- */
+  function buildToggle(onClick) {
+    var btn = document.createElement('button');
+    btn.id = 'music-toggle';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', '背景音乐开关');
+    btn.title = '背景音乐';
+    btn.innerHTML =
+      '<span class="mt-ring"></span>' +
+      '<span class="mt-ico"><span class="mt-bars"><i></i><i></i><i></i><i></i></span></span>' +
+      '<span class="mt-tip">开启音乐</span>';
+    document.body.appendChild(btn);
+    btn.addEventListener('click', onClick);
+    return btn;
+  }
+
+  function setToggleState(btn, playing) {
+    btn.classList.toggle('is-playing', !!playing);
+    var tip = btn.querySelector('.mt-tip');
+    if (tip) tip.textContent = playing ? '暂停音乐' : '开启音乐';
+    btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
+  }
+
+  function init() {
     if (typeof APlayer === 'undefined') {
       console.warn('[music] APlayer 未加载');
       return;
     }
 
     var container = document.createElement('div');
-    container.id = 'jw-player';
-    container.className = 'jw-player';
+    container.id = 'music-player';
+    container.className = 'music-player';
     document.body.appendChild(container);
+
+    var wanted = readPref();   // 用户此前是否开过音乐
+    var playing = false;
 
     var player = new APlayer({
       container: container,
       fixed: true,
       mini: true,
-      autoplay: true,
+      autoplay: false,
       theme: '#6366f1',
       loop: 'all',
       order: 'random',
@@ -78,22 +125,54 @@
       audio: PLAYLIST
     });
 
-    // 浏览器通常拦截带声音的自动播放：首次交互时补播一次
-    var started = false;
-    function tryPlay() {
-      if (started) return;
-      started = true;
-      try { player.play(); } catch (e) { /* 忽略 */ }
-    }
-    document.addEventListener('click', tryPlay, { once: true });
-    document.addEventListener('touchstart', tryPlay, { once: true });
+    var toggle = buildToggle(function () {
+      if (playing) {
+        player.pause();
+        playing = false;
+        writePref(false);
+        setToggleState(toggle, false);
+        return;
+      }
+      try {
+        player.volume(0.35, true);
+        player.play();
+        playing = true;
+        writePref(true);
+        setToggleState(toggle, true);
+      } catch (e) { /* 忽略 */ }
+    });
 
-    window.__jwPlayer = player;
+    player.on('play', function () { playing = true; setToggleState(toggle, true); });
+    player.on('pause', function () { playing = false; setToggleState(toggle, false); });
+    player.on('canplay', function () {
+      if (wanted) { playing = true; setToggleState(toggle, true); }
+    });
+
+    // 用户此前开过音乐 -> 静音自动播放（浏览器允许 muted autoplay）
+    if (wanted) {
+      player.volume(0.0001, false);
+      try { player.play(); } catch (e) { /* noop */ }
+    }
+    setToggleState(toggle, wanted);
+
+    // 兜底：已有过页面交互但因策略没播成时，补一次
+    var armed = false;
+    function arm() {
+      if (armed) return;
+      armed = true;
+      if (wanted && !playing) {
+        try { player.volume(0.35, true); player.play(); } catch (e) { /* noop */ }
+      }
+    }
+    document.addEventListener('click', arm, { once: true });
+    document.addEventListener('touchstart', arm, { once: true });
+
+    window.__musicPlayer = player;
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initMusic);
+    document.addEventListener('DOMContentLoaded', init);
   } else {
-    initMusic();
+    init();
   }
 })();

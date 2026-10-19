@@ -1,15 +1,15 @@
 ---
-title: 博客上线啦：Hexo + NexT 从零搭建与部署全记录
+title: 博客上线啦：Hexo + Butterfly 从零搭建与部署全记录
 date: 2026-10-18 00:10:00
 updated: 2026-10-18 00:10:00
 categories:
   - 技术
 tags:
   - Hexo
-  - NexT
+  - Butterfly
   - GitHub Pages
   - 博客搭建
-description: 记录一次从零开始的 Hexo 博客搭建：安装初始化、NexT 主题美化、GitHub Pages 部署与踩坑总结。
+description: 记录一次从零开始的 Hexo 博客搭建：安装初始化、Butterfly 主题美化、GitHub Pages 部署与踩坑总结。
 ---
 
 ## 前言

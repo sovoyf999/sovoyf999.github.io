@@ -75,9 +75,9 @@ subtitle:
   typed_option:
   source: false
   sub:
-    - 'Juice WRLD Forever'
     - '记录技术与生活'
     - 'Stay curious. Keep building.'
+    - 'Write it down, ship it.'
 
 # 首页文章布局：3 = 封面左右交替
 index_layout: 3
@@ -120,7 +120,7 @@ aside:
     category: true
   card_author:
     enable: true
-    description: '一个热爱技术与音乐的人'
+    description: '热爱技术与音乐，持续构建中'
     button:
       enable: true
       icon: fab fa-github
@@ -128,7 +128,7 @@ aside:
       link: https://github.com/sovoyf999
   card_announcement:
     enable: true
-    content: '欢迎来到我的博客，这里记录技术与生活，也放点 Juice WRLD。'
+    content: '欢迎来到我的博客，这里记录技术笔记与踩坑过程。右下角可以开启背景音乐。'
   card_recent_post:
     enable: true
     limit: 5
@@ -223,12 +223,13 @@ beautify:
   title_prefix_icon_color:
 
 # ---------------------------------------------------------------
-# 注入 Juice WRLD 背景音乐播放器（本地 APlayer）
+# 注入背景音乐播放器（本地 APlayer + 悬浮开关按钮）
 # ---------------------------------------------------------------
 inject:
   head:
     - '<link rel="stylesheet" href="/css/aplayer.min.css">'
     - '<link rel="stylesheet" href="/css/music.css">'
+    - '<link rel="stylesheet" href="/css/custom.css">'
   bottom:
     - '<script src="/js/aplayer.min.js"></script>'
     - '<script src="/js/music.js"></script>'
