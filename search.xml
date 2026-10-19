@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Hello World</title>
+    <url>/2026/10/17/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>博客上线啦：Hexo + Butterfly 从零搭建与部署全记录</title>
+    <url>/2026/10/18/blog-launch/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这是一篇用于验证站点排版与部署流程的测试文章。经过一番折腾，这个基于 <strong>Hexo + NexT</strong> 的博客终于跑起来了，访问地址是 <a href="https://sovoyf999.github.io/">sovoyf999.github.io</a>。</p>
+<p>之所以自己搭博客，是因为想有一个完全属于自己的写作空间：没有平台限制，没有广告，数据在自己手里。</p>
+<span id="more"></span>
+
+<h2 id="技术栈"><a href="#技术栈" class="headerlink" title="技术栈"></a>技术栈</h2><table>
+<thead>
+<tr>
+<th>组件</th>
+<th>版本 &#x2F; 选择</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Hexo</td>
+<td>8.1.2</td>
+<td>静态站点生成器</td>
+</tr>
+<tr>
+<td>NexT</td>
+<td>8.29.0（Gemini 方案）</td>
+<td>简洁响应式主题</td>
+</tr>
+<tr>
+<td>Node.js</td>
+<td>22 LTS</td>
+<td>运行环境</td>
+</tr>
+<tr>
+<td>GitHub Pages</td>
+<td>免费托管</td>
+<td>站点托管与 CDN</td>
+</tr>
+<tr>
+<td>hexo-deployer-git</td>
+<td>4.0.0</td>
+<td>一键部署插件</td>
+</tr>
+</tbody></table>
+<h2 id="搭建过程"><a href="#搭建过程" class="headerlink" title="搭建过程"></a>搭建过程</h2><p>初始化的命令其实很简单：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装 CLI 并初始化项目</span></span><br><span class="line">npm install -g hexo-cli</span><br><span class="line">hexo init my-blog</span><br><span class="line"><span class="built_in">cd</span> my-blog</span><br><span class="line">npm install</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装 NexT 主题</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/next-theme/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
+
+<p>写文章、本地预览、生成与部署：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo new post <span class="string">&quot;文章标题&quot;</span>   <span class="comment"># 新建文章</span></span><br><span class="line">hexo server                <span class="comment"># 本地预览 http://localhost:4000</span></span><br><span class="line">hexo clean &amp;&amp; hexo generate</span><br><span class="line">hexo deploy                <span class="comment"># 推送到 gh-pages</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="这次做的美化"><a href="#这次做的美化" class="headerlink" title="这次做的美化"></a>这次做的美化</h2><p>主题默认已经很好看了，但稍微调一调会更舒服：</p>
+<ul>
+<li><strong>侧栏头像</strong>：换成 GitHub 头像，加了渐变光环和悬浮旋转</li>
+<li><strong>主题色</strong>：统一为靛蓝色 <code>#6366f1</code>，链接、进度条、书签保持一致</li>
+<li><strong>阅读进度条</strong>：页面顶部随滚动前进</li>
+<li><strong>代码一键复制</strong>：所有代码块右上角都有复制按钮</li>
+<li><strong>返回顶部</strong>：右下角显示滚动百分比</li>
+<li><strong>本地搜索</strong>：侧栏可直接搜索文章内容</li>
+<li><strong>卡片动效</strong>：文章卡片悬浮时轻微上浮 + 阴影加深</li>
+<li><strong>标签页 &#x2F; 分类页</strong>：补齐了菜单里缺失的两个页面</li>
+</ul>
+<h2 id="部署架构"><a href="#部署架构" class="headerlink" title="部署架构"></a>部署架构</h2><p>站点采用「源码与产物分离」的方式：</p>
+<ol>
+<li><code>main</code> 分支存放 Hexo 源码（配置、文章、主题）</li>
+<li><code>gh-pages</code> 分支存放 <code>hexo generate</code> 生成的静态文件</li>
+<li>GitHub Pages 从 <code>gh-pages</code> 分支根目录发布</li>
+</ol>
+<p>这样既能保留完整的写作工程，又能让 Pages 只读取构建产物，干净利落。</p>
+<blockquote>
+<p>小提示：GitHub 已经不支持用账号密码直接 <code>git push</code>，需要 Personal Access Token 或 SSH Key。首次推送时用凭据管理器登录一次即可。</p>
+</blockquote>
+<h2 id="踩过的坑"><a href="#踩过的坑" class="headerlink" title="踩过的坑"></a>踩过的坑</h2><p>搭建过程中也遇到几个值得记录的问题：</p>
+<ol>
+<li><strong>主题被当成 submodule</strong>：<code>git clone</code> 下来的主题自带 <code>.git</code>，直接提交会变成子模块引用，需要先删掉 <code>themes/next/.git</code>。</li>
+<li><strong>Pages 发布源选错</strong>：仓库创建时 Pages 默认从 <code>main</code> 构建，而 <code>main</code> 是源码没有 <code>index.html</code>，导致 404；改成 <code>gh-pages</code> 后才正常。</li>
+<li><strong><code>.nojekyll</code> 不是必须的</strong>：确认 NexT 产物里没有下划线开头的文件，Jekyll 不会误伤，所以可以不添加。</li>
+</ol>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>从空白目录到线上可访问的博客，核心其实就三件事：<strong>写好内容、选好主题、配对部署</strong>。剩下的美化都是锦上添花。</p>
+<p>接下来打算在这里记录一些技术笔记和生活琐碎，希望自己能坚持下去。</p>
+<hr>
+<p><em>本文由 Hexo 生成，主题 NexT，托管于 GitHub Pages。</em></p>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+        <tag>Butterfly</tag>
+        <tag>GitHub Pages</tag>
+        <tag>博客搭建</tag>
+      </tags>
+  </entry>
+</search>
